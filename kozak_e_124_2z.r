@@ -3,12 +3,11 @@
 # проверка рабочей директории
 getwd()
 setwd("C:/group_124/kozak/MathMod/MathMod")
-
-library("tidyverse")# Всё обо всем
-library("readr")# функция read_csv()
-library("stringr")# функция str_replace_all
-library("dplyr")# функции: filter(),arrange(),select(),mutate(),summarize(),group_by(),sample_n()
-library("ggplot2")# графики функций qplot()
+#устанавливаем библиотеки
+library("tidyverse") 
+library("stringr")    
+library("dplyr")      
+library("ggplot2")
 
 #считываем файл
 eddypro = read.csv("eddypro.csv", skip = 1, na = c ("","NA","-9999","-9999.0"), comment = c("["))
@@ -54,5 +53,109 @@ test = row_numbers[-teach]
 teaching_tbl = eddypro_numeric[teach,]
 #Тестирующая выборка
 testing_tbl = eddypro_numeric[test,]
-# Создадим модель добавив в нее все переменные с помощью "(.)" и используя обучающую выборку
-mod = lm(h2o_flux~ (.) , data = teaching_tbl)
+
+#Модель 1 по обучающей выборке
+mod1 = lm(h2o_flux ~ (.), data = testing_tbl)
+
+#Информация о моделе
+summary(mod1)
+#Коэффициенты модели
+coef(mod1)
+#Остатки
+resid(mod1)
+#Доверительный интервал
+confint(mod1)
+#Дисперсионный анализ модели
+anova(mod1)
+#Графическое представление модели
+plot(mod1)
+
+# МОДЕЛЬ 2
+mod2 = lm ( h2o_flux~ DOY + file_records + Tau+qc_Tau + rand_err_Tau + H +qc_H 
+            + rand_err_H + LE + qc_LE + rand_err_LE + co2_flux + qc_h2o_flux
+            + rand_err_co2_flux + rand_err_h2o_flux + H_strg 
+            + co2_molar_density + co2_mole_fraction + co2_mixing_ratio 
+            + h2o_molar_density + h2o_mole_fraction + h2o_mixing_ratio + h2o_time_lag 
+            + sonic_temperature + air_temperature + air_pressure + air_density 
+            + air_heat_capacity + air_molar_volume + water_vapor_density + e + es 
+            + specific_humidity + RH + VPD + Tdew + u_unrot + v_unrot + w_unrot + u_rot 
+            + v_rot + w_rot + max_speed + yaw + pitch + TKE + L + bowen_ratio 
+            + x_peak + x_offset  + un_Tau + Tau_scf + un_H + H_scf + un_LE + LE_scf + un_co2_flux + un_h2o_flux 
+            + w_spikes + ts_spikes + mean_value + v_var + ts_var + h2o_var 
+            + co2_signal_strength_7200 + h2o_signal_strength_7200, data = teaching_tbl)
+
+coef(mod2)
+resid(mod2)
+confint(mod2)
+summary(mod2)
+anova(mod2)
+anova(mod2,mod1)
+plot(mod2) 
+
+
+# МОДЕЛЬ 3
+mod3 = lm ( h2o_flux~ DOY + file_records + Tau+qc_Tau + rand_err_Tau + H +qc_H 
+            + rand_err_H + LE + qc_LE + rand_err_LE + co2_flux + qc_h2o_flux
+            + rand_err_co2_flux + rand_err_h2o_flux + H_strg 
+            + co2_molar_density + co2_mole_fraction + co2_mixing_ratio 
+            + h2o_molar_density + h2o_mole_fraction + h2o_mixing_ratio + h2o_time_lag 
+            + specific_humidity + RH + VPD + Tdew + u_unrot + v_unrot + w_unrot + u_rot 
+            + v_rot + w_rot + max_speed + yaw + pitch + TKE + L + bowen_ratio 
+            + x_peak + x_offset  + un_Tau + Tau_scf + un_H + H_scf + un_LE + LE_scf + un_co2_flux + un_h2o_flux 
+            + w_spikes + ts_spikes + mean_value + v_var + ts_var + h2o_var 
+            + co2_signal_strength_7200 + h2o_signal_strength_7200, data = teaching_tbl)
+
+coef(mod3)
+resid(mod3)
+confint(mod3)
+summary(mod3)
+anova(mod3)
+anova(mod3, mod2)
+plot(mod3)
+
+
+# МОДЕЛЬ 4
+mod4 = lm ( h2o_flux~ DOY + file_records + Tau+qc_Tau + rand_err_Tau + H +qc_H 
+            + rand_err_H + LE + qc_LE + rand_err_LE + co2_flux + qc_h2o_flux
+            + rand_err_co2_flux + rand_err_h2o_flux + H_strg 
+            + co2_molar_density + co2_mole_fraction + co2_mixing_ratio 
+            + h2o_molar_density + h2o_mole_fraction + h2o_mixing_ratio + h2o_time_lag 
+            + specific_humidity + RH + VPD + Tdew + u_unrot + v_unrot + w_unrot + u_rot 
+            + x_peak + x_offset  + un_Tau + Tau_scf + un_H + H_scf + un_LE + LE_scf + un_co2_flux + un_h2o_flux 
+            + w_spikes + ts_spikes + mean_value + v_var + ts_var + h2o_var 
+            + co2_signal_strength_7200 + h2o_signal_strength_7200, data = teaching_tbl)
+
+coef(mod4)
+resid(mod4)
+confint(mod4)
+summary(mod4)
+anova(mod4)
+anova(mod4, mod3)
+plot(mod4)
+
+#Корреляционный анализ переменных участвующих в линейной модели
+cor_teaching_tbl = select(teaching_tbl,DOY,file_records,Tau, qc_Tau,rand_err_Tau,H, qc_H, 
+                          rand_err_H, LE, qc_LE, rand_err_LE,co2_flux,qc_h2o_flux,
+                          rand_err_co2_flux,rand_err_h2o_flux,H_strg,
+                          co2_molar_density, co2_mole_fraction, co2_mixing_ratio, 
+                          h2o_molar_density, h2o_mole_fraction, h2o_mixing_ratio, h2o_time_lag, 
+                          specific_humidity, RH, VPD, Tdew, u_unrot, v_unrot, w_unrot, u_rot, 
+                          x_peak, x_offset, un_Tau, Tau_scf,un_H, H_scf, un_LE, LE_scf,un_co2_flux,un_h2o_flux, 
+                          w_spikes, ts_spikes, mean_value, v_var,ts_var,h2o_var,
+                          co2_signal_strength_7200,h2o_signal_strength_7200)
+
+#Получение таблицы коэффициентов корреляций
+cor_td = cor(cor_teaching_tbl) %>% as.data.frame
+
+#Построение графиков по полученной моделе
+#Построение точек по значениями обучающей выборки и наложение предсказанных значений по 4 модели
+qplot(h2o_flux , h2o_flux, data = teaching_tbl) + geom_line(aes(y = predict(mod4, teaching_tbl)))
+
+#Построение точек по значением тестирующей выборки и наложение предсказанных значений по 4 модели
+qplot(h2o_flux , h2o_flux, data = testing_tbl) + geom_line(aes(y = predict(mod4, testing_tbl)))
+
+#Примеры
+qplot(DOY, h2o_flux, data = testing_tbl) + geom_line(aes(y = predict(mod4, testing_tbl)))
+qplot(Tau, h2o_flux, data = testing_tbl) + geom_line(aes(y = predict(mod4, testing_tbl)))
+qplot(co2_flux, h2o_flux, data = testing_tbl) + geom_line(aes(y = predict(mod4, testing_tbl)))
+
