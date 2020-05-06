@@ -57,9 +57,9 @@ testing_tbl = eddypro_numeric[test,]
 #Модель 1 по обучающей выборке
 mod1 = lm(h2o_flux ~ (.), data = testing_tbl)
 
-#Информация о моделе
+#Информация 
 summary(mod1)
-#Коэффициенты модели
+#Коэффициенты 
 coef(mod1)
 #Остатки
 resid(mod1)
